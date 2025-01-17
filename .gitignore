@@ -31,6 +31,8 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+testes/time.txt
+
 .idea/
 
 # Visual Studio 2015/2017 cache/options directory
