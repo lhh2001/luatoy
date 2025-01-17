@@ -815,7 +815,7 @@ void luaK_dischargevars (FuncState *fs, expdesc *e) {
     }
     case VINDEXSTR: {
       freereg(fs, e->u.ind.t);
-      e->u.info = luaK_codeABC(fs, OP_GETFIELD, 0, e->u.ind.t, e->u.ind.idx);
+      e->u.info = luaK_codeABC(fs, e->ctn ? OP_SAFEGETFIELD : OP_GETFIELD, 0, e->u.ind.t, e->u.ind.idx);
       e->k = VRELOC;
       break;
     }

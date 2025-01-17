@@ -827,12 +827,13 @@ static void statlist (LexState *ls) {
 }
 
 
-static void fieldsel (LexState *ls, expdesc *v) {
+static void fieldsel (LexState *ls, expdesc *v, int ctn) {
   /* fieldsel -> ['.' | ':'] NAME */
   FuncState *fs = ls->fs;
   expdesc key;
   luaK_exp2anyregup(fs, v);
   luaX_next(ls);  /* skip the dot or colon */
+  v->ctn = ctn;
   codename(ls, &key);
   luaK_indexed(fs, v, &key);
 }
@@ -1145,7 +1146,11 @@ static void suffixedexp (LexState *ls, expdesc *v) {
   for (;;) {
     switch (ls->t.token) {
       case '.': {  /* fieldsel */
-        fieldsel(ls, v);
+        fieldsel(ls, v, 0);
+        break;
+      }
+      case TK_NILCONDINDEX: {
+        fieldsel(ls, v, 1);
         break;
       }
       case '[': {  /* '[' exp ']' */
@@ -1780,10 +1785,10 @@ static int funcname (LexState *ls, expdesc *v) {
   int ismethod = 0;
   singlevar(ls, v);
   while (ls->t.token == '.')
-    fieldsel(ls, v);
+    fieldsel(ls, v, 0);
   if (ls->t.token == ':') {
     ismethod = 1;
-    fieldsel(ls, v);
+    fieldsel(ls, v, 0);
   }
   return ismethod;
 }

@@ -582,7 +582,7 @@ static const char *getobjname (const Proto *p, int lastpc, int reg,
         *name = "integer index";
         return "field";
       }
-      case OP_GETFIELD: {
+      case OP_GETFIELD: case OP_SAFEGETFIELD: {
         int k = GETARG_C(i);  /* key index */
         kname(p, k, name);
         return isEnv(p, lastpc, i, 0);
@@ -619,7 +619,7 @@ static const char *funcnamefromcode (lua_State *L, const Proto *p,
     }
     /* other instructions can do calls through metamethods */
     case OP_SELF: case OP_GETTABUP: case OP_GETTABLE:
-    case OP_GETI: case OP_GETFIELD:
+    case OP_GETI: case OP_GETFIELD: case OP_SAFEGETFIELD:
       tm = TM_INDEX;
       break;
     case OP_SETTABUP: case OP_SETTABLE: case OP_SETI: case OP_SETFIELD:

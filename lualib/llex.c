@@ -49,7 +49,7 @@ static const char *const luaX_tokens [] = {
     "return", "then", "true", "until", "while",
     "//", "..", "...", "==", ">=", "<=", "~=",
     "<<", ">>", "::", "<eof>",
-    "<number>", "<integer>", "<name>", "<string>"
+    "<number>", "<integer>", "<name>", "<string>", "?."
 };
 
 
@@ -528,6 +528,13 @@ static int llex (LexState *ls, SemInfo *seminfo) {
         next(ls);
         if (check_next1(ls, ':')) return TK_DBCOLON;  /* '::' */
         else return ':';
+      }
+      case '?': {
+        next(ls);
+        if (check_next1(ls, '.')) return TK_NILCONDINDEX; /* '?.' */
+        else
+          lexerror(ls, "invalid operator ?", 0);
+        break;
       }
       case '"': case '\'': {  /* short literal strings */
         read_string(ls, ls->current, seminfo);

@@ -83,6 +83,7 @@ typedef struct expdesc {
   } u;
   int t;  /* patch list of 'exit when true' */
   int f;  /* patch list of 'exit when false' */
+  int ctn; /* whether to check table is nil */
 } expdesc;
 
 

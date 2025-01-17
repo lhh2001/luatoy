@@ -248,6 +248,7 @@ OP_GETTABUP,/*	A B C	R[A] := UpValue[B][K[C]:shortstring]		*/
 OP_GETTABLE,/*	A B C	R[A] := R[B][R[C]]				*/
 OP_GETI,/*	A B C	R[A] := R[B][C]					*/
 OP_GETFIELD,/*	A B C	R[A] := R[B][K[C]:shortstring]			*/
+OP_SAFEGETFIELD,/*	A B C	R[A] := R[B][K[C]:shortstring], R[A] := nil if R[B] not a table			*/
 
 OP_SETTABUP,/*	A B C	UpValue[A][K[B]:shortstring] := RK(C)		*/
 OP_SETTABLE,/*	A B C	R[A][R[B]] := RK(C)				*/

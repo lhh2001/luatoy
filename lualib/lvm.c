@@ -819,7 +819,7 @@ void luaV_finishOp (lua_State *L) {
     }
     case OP_UNM: case OP_BNOT: case OP_LEN:
     case OP_GETTABUP: case OP_GETTABLE: case OP_GETI:
-    case OP_GETFIELD: case OP_SELF: {
+    case OP_GETFIELD: case OP_SAFEGETFIELD: case OP_SELF: {
       setobjs2s(L, base + GETARG_A(inst), --L->top.p);
       break;
     }
@@ -1301,6 +1301,22 @@ void luaV_execute (lua_State *L, CallInfo *ci) {
         luaV_fastget(rb, key, s2v(ra), luaH_getshortstr, tag);
         if (tagisempty(tag))
           Protect(luaV_finishget(L, rb, rc, ra, tag));
+        vmbreak;
+      }
+      vmcase(OP_SAFEGETFIELD) {
+        StkId ra = RA(i);
+        TValue *rb = vRB(i);
+        TValue *rc = KC(i);
+        TString *key = tsvalue(rc);  /* key must be a short string */
+        lu_byte tag;
+        if (ttisnil(rb)) {
+          setnilvalue(s2v(ra));
+        }
+        else {
+          luaV_fastget(rb, key, s2v(ra), luaH_getshortstr, tag);
+          if (tagisempty(tag))
+            Protect(luaV_finishget(L, rb, rc, ra, tag)); 
+        }
         vmbreak;
       }
       vmcase(OP_SETTABUP) {
