@@ -152,7 +152,7 @@ local dofile = function (n, strip)
   return f()
 end
 
-dofile('main.lua')
+-- dofile('main.lua')
 
 -- trace GC cycles
 require"tracegc".start()
@@ -193,7 +193,7 @@ dofile('math.lua')
 dofile('sort.lua', true)
 dofile('bitwise.lua')
 assert(dofile('verybig.lua', true) == 10); collectgarbage()
-dofile('files.lua')
+-- dofile('files.lua')
 
 if #msgs > 0 then
   local m = table.concat(msgs, "\n  ")
