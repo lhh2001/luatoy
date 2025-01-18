@@ -1323,6 +1323,7 @@ void luaK_indexed (FuncState *fs, expdesc *t, expdesc *k) {
     if (isKstr(fs, k)) {
       t->u.ind.idx = cast(short, k->u.info);  /* literal short string */
       t->k = VINDEXSTR;
+      t->ctn = 0;
     }
     else if (isCint(k)) {  /* int. constant in proper range? */
       t->u.ind.idx = cast(short, k->u.ival);

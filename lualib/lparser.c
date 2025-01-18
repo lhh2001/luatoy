@@ -833,9 +833,9 @@ static void fieldsel (LexState *ls, expdesc *v, int ctn) {
   expdesc key;
   luaK_exp2anyregup(fs, v);
   luaX_next(ls);  /* skip the dot or colon */
-  v->ctn = ctn;
   codename(ls, &key);
   luaK_indexed(fs, v, &key);
+  v->ctn = ctn;
 }
 
 
@@ -1381,6 +1381,7 @@ static void check_conflict (LexState *ls, struct LHS_assign *lh, expdesc *v) {
           conflict = 1;  /* table is the upvalue being assigned now */
           lh->v.k = VINDEXSTR;
           lh->v.u.ind.t = extra;  /* assignment will use safe copy */
+          lh->v.ctn = 0;
         }
       }
       else {  /* table is a register */
