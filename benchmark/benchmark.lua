@@ -8,7 +8,7 @@ local abcd_case_list = {
 
 local a, b, c, d
 local start_time
-local iter_times = 1000000
+local iter_times = 5000000
 
 local function safe_index(table, ...)
     for _, key in ipairs{...} do
@@ -25,7 +25,17 @@ for _, abcd_case in ipairs(abcd_case_list) do
     print("value of a b c d:")
     print(a, b, c, d)
 
-    -- 第一种方法
+    -- if - else 简单粗暴 方法
+    start_time = os.clock()
+    for i = 1, iter_times do
+        local var
+        if a and a.b and a.b.c then
+            var = a.b.c.d
+        end
+    end
+    print("time cost 1-1 : ", os.clock() - start_time)
+
+    -- if - else 使用缓存 方法
     start_time = os.clock()
     for i = 1, iter_times do
         local var
@@ -39,7 +49,7 @@ for _, abcd_case in ipairs(abcd_case_list) do
             end
         end
     end
-    print("time cost 1 : ", os.clock() - start_time)
+    print("time cost 1-2 : ", os.clock() - start_time)
 
     -- or判空方法
     local empty_table = {}
@@ -69,7 +79,7 @@ for _, abcd_case in ipairs(abcd_case_list) do
     for i = 1, iter_times do
         local var = a.b.c.d
     end
-    print("time cost 5 : ", os.clock() - start_time)
+    print("time cost 5-1 : ", os.clock() - start_time)
     debug.setmetatable(nil, nil)
 
     -- 元表方法 function
@@ -78,6 +88,6 @@ for _, abcd_case in ipairs(abcd_case_list) do
     for i = 1, iter_times do
         local var = a.b.c.d
     end
-    print("time cost 6 : ", os.clock() - start_time)
+    print("time cost 5-2 : ", os.clock() - start_time)
     debug.setmetatable(nil, nil)
 end
