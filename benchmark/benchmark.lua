@@ -1,14 +1,15 @@
+local case_num <const> = 5
 local abcd_case_list = {
-    { nil, nil, nil, nil },
-    { {},  nil, nil, nil },
-    { {},  {},  nil, nil },
-    { {},  {},  {},  nil },
-    { {},  {},  {},  {}  },
+    [1] = nil,
+    [2] = { b = nil  },
+    [3] = { b = {} },
+    [4] = { b = { c = {} } },
+    [5] = { b = { c = { d = {} } } },
 }
 
-local a, b, c, d
 local start_time
-local iter_times = 5000000
+local empty_table = {}
+local iter_times <const> = 5000000
 
 local function safe_index(table, ...)
     for _, key in ipairs{...} do
@@ -20,12 +21,12 @@ local function safe_index(table, ...)
     return table
 end
 
-for _, abcd_case in ipairs(abcd_case_list) do
-    a, b, c, d = table.unpack(abcd_case)
+for i = 1, case_num do
+    local a = abcd_case_list[i]
     print("value of a b c d:")
-    print(a, b, c, d)
+    print(a, a?.b, a?.b?.c, a?.b?.c?.d)
 
-    -- if - else 简单粗暴 方法
+    -- if - else 暴力写法
     start_time = os.clock()
     for i = 1, iter_times do
         local var
@@ -35,7 +36,7 @@ for _, abcd_case in ipairs(abcd_case_list) do
     end
     print("time cost 1-1 : ", os.clock() - start_time)
 
-    -- if - else 使用缓存 方法
+    -- if - else 使用缓存
     start_time = os.clock()
     for i = 1, iter_times do
         local var
@@ -51,29 +52,35 @@ for _, abcd_case in ipairs(abcd_case_list) do
     end
     print("time cost 1-2 : ", os.clock() - start_time)
 
-    -- or判空方法
-    local empty_table = {}
+    -- or判空 暴力写法
+    start_time = os.clock()
+    for i = 1, iter_times do
+        local var = (((a or {}).b or {}).c or {}).d
+    end
+    print("time cost 2-1 : ", os.clock() - start_time)
+
+    -- or判空 共享空表
     start_time = os.clock()
     for i = 1, iter_times do
         local var = (((a or empty_table).b or empty_table).c or empty_table).d
     end
-    print("time cost 2 : ", os.clock() - start_time)
+    print("time cost 2-2 : ", os.clock() - start_time)
 
-    -- 函数方法
+    -- 函数封装
     start_time = os.clock()
     for i = 1, iter_times do
         local var = safe_index(a, 'b', 'c', 'd')
     end
     print("time cost 3 : ", os.clock() - start_time)
 
-    -- ?.方法
+    -- ?.运算符
     start_time = os.clock()
     for i = 1, iter_times do
         local var = a?.b?.c?.d
     end
     print("time cost 4 : ", os.clock() - start_time)
 
-    -- 元表方法 {}
+    -- 元表  __index = {}
     debug.setmetatable(nil, { __index = {} })
     start_time = os.clock()
     for i = 1, iter_times do
@@ -82,7 +89,7 @@ for _, abcd_case in ipairs(abcd_case_list) do
     print("time cost 5-1 : ", os.clock() - start_time)
     debug.setmetatable(nil, nil)
 
-    -- 元表方法 function
+    -- 元表  __index = function() end
     debug.setmetatable(nil, { __index = function() end })
     start_time = os.clock()
     for i = 1, iter_times do
